@@ -24,6 +24,8 @@ module Sunspot
       def spellcheck_suggestions
         unless defined?(@spellcheck_suggestions)
           @spellcheck_suggestions = {}
+          Rails.logger.info("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+          Rails.logger.info(solr_spellcheck.inspect)
           count = (solr_spellcheck['suggestions'].length - 4) / 2
           (0..(count - 1)).each do |i|
             term = solr_spellcheck['suggestions'][i * 2]
