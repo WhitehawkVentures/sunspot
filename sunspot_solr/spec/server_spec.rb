@@ -1,13 +1,13 @@
 require File.expand_path('spec_helper', File.dirname(__FILE__))
 require 'tempfile'
 
-describe Sunspot::Server do
+describe Sunspot::Solr::Server do
   SUNSPOT_START_JAR = File.expand_path(
     File.join(File.dirname(__FILE__), '..', '..', 'solr', 'start.jar')
   )
 
   before :each do
-    @server = Sunspot::Server.new
+    @server = Sunspot::Solr::Server.new
   end
 
   it 'runs server in current process' do
@@ -50,6 +50,13 @@ describe Sunspot::Server do
     @server.solr_jar = SUNSPOT_START_JAR
     FileUtils.should_receive(:cd).with(File.dirname(SUNSPOT_START_JAR))
     @server.run
+  end
+
+  it 'raises an error if java is missing' do
+    Sunspot::Solr::Java.stub(:installed? => false)
+    expect {
+     Sunspot::Solr::Server.new
+    }.to raise_error(Sunspot::Solr::Server::JavaMissing)
   end
 
   describe 'with logging' do
