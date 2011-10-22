@@ -24,11 +24,13 @@ module Sunspot
       def spellcheck_suggestions
         unless defined?(@spellcheck_suggestions)
           @spellcheck_suggestions = {}
-          count = (solr_spellcheck['suggestions'].length - 2) / 2
-          (0..(count - 1)).each do |i|
-            term = solr_spellcheck['suggestions'][i * 2]
-            suggestion = solr_spellcheck['suggestions'][(i * 2) + 1]
-            @spellcheck_suggestions[term] = suggestion
+          unless solr_spellcheck['suggestions'].blank?
+            count = (solr_spellcheck['suggestions'].length - 2) / 2
+            (0..(count - 1)).each do |i|
+              term = solr_spellcheck['suggestions'][i * 2]
+              suggestion = solr_spellcheck['suggestions'][(i * 2) + 1]
+              @spellcheck_suggestions[term] = suggestion
+            end
           end
         end
         @spellcheck_suggestions
