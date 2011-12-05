@@ -1,42 +1,4 @@
 namespace :sunspot do
-  namespace :solr do
-    desc 'Start the Solr instance'
-    task :start => :environment do
-      if RUBY_PLATFORM =~ /w(in)?32$/
-        abort('This command does not work on Windows. Please use rake sunspot:solr:run to run Solr in the foreground.')
-      end
-
-      if defined?(Sunspot::Solr::Server)
-        Sunspot::Solr::Server.new.start
-      else
-        abort('sunspot_solr gem required for this command. Add gem "sunspot_solr" to Gemfile')
-      end
-    end
-
-    desc 'Run the Solr instance in the foreground'
-    task :run => :environment do
-      if defined?(Sunspot::Solr::Server)
-        Sunspot::Solr::Server.new.run
-      else
-        abort('sunspot_solr gem required for this command. Add gem "sunspot_solr" to Gemfile')
-      end
-    end
-
-    desc 'Stop the Solr instance'
-    task :stop => :environment do
-      if RUBY_PLATFORM =~ /w(in)?32$/
-        abort('This command does not work on Windows.')
-      end
-
-      if defined?(Sunspot::Solr::Server)
-        Sunspot::Solr::Server.new.stop
-      else
-        abort('sunspot_solr gem required for this command. Add gem "sunspot_solr" to Gemfile')
-      end
-    end
-
-    task :reindex => :"sunspot:reindex"
-  end
 
   desc "Reindex all solr models that are located in your application's models directory."
   # This task depends on the standard Rails file naming \
@@ -82,7 +44,7 @@ namespace :sunspot do
       total_documents = sunspot_models.map { | m | m.count }.sum
       reindex_options[:progress_bar] = ProgressBar.new(total_documents)
     rescue LoadError => e
-      $stderr.puts "Skipping progress bar: for progress reporting, add gem 'progress_bar' to your Gemfile"
+      $stdout.puts "Skipping progress bar: for progress reporting, add gem 'progress_bar' to your Gemfile"
     rescue Exception => e
       $stderr.puts "Error using progress bar: #{e.message}"
     end
@@ -90,6 +52,32 @@ namespace :sunspot do
     # Finally, invoke the class-level solr_reindex on each model
     sunspot_models.each do |model|
       model.solr_reindex(reindex_options)
+    end
+  end
+
+
+  unless defined?(Sunspot::Solr)
+    namespace :solr do
+  		task :moved_to_sunspot_solr do
+  	    abort %(
+  Note: This task has been moved to the sunspot_solr gem. To install, start and
+  stop a local Solr instance, please add sunspot_solr to your Gemfile:
+
+  group :development do
+    gem 'sunspot_solr'
+  end
+
+)
+  		end
+  		
+      desc 'Start the Solr instance'
+      task :start => :moved_to_sunspot_solr
+      desc 'Run the Solr instance in the foreground'
+      task :run => :moved_to_sunspot_solr
+      desc 'Stop the Solr instance'
+      task :stop => :moved_to_sunspot_solr
+  		# for backwards compatibility
+      task :reindex => :"sunspot:reindex"
     end
   end
   
