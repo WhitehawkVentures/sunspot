@@ -12,8 +12,8 @@ module Sunspot
       end
 
 
-      def spatial(field_name, lat, lon, options = {})
-        spatial = Sunspot::Query::Spatial.new(@setup.field(field_name), lat, lon, options)
+      def spatial(field_name, lat, lng, options = {})
+        spatial = Sunspot::Query::Spatial.new(@setup.field(field_name), lat, lng, options)
         @query.add_spatial(spatial)
       end
 
