@@ -40,7 +40,7 @@ module Sunspot
         spatial
       end
 
-      def paginate(page, per_page)
+      def paginate(page, per_page, offset = nil)
         if @pagination
           @pagination.offset = offset
           @pagination.page = page
