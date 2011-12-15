@@ -36,6 +36,12 @@ module Sunspot
           end
         @query.add_sort(sort)
       end
+      
+      def order_by_geodist(field_name, lat, lon, direction = nil)
+        @query.add_sort(
+          Sunspot::Query::Sort::GeodistSort.new(@setup.field(field_name), lat, lon, direction)
+        )
+      end
 
       # 
       # DEPRECATED Use <code>order_by(:random)</code>
