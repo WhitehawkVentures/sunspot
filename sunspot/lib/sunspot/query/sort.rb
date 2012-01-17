@@ -90,7 +90,7 @@ module Sunspot
           "score #{direction_for_solr}"
         end
       end
-      
+
       #
       # A GeodistSort sorts by distance from a given point.
       #
